@@ -1,5 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: postgres
   namespace: three-tier
@@ -26,13 +27,22 @@ spec:
 
           env:
             - name: POSTGRES_DB
-              value: appdb
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_NAME
 
             - name: POSTGRES_USER
-              value: appuser
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_USER
 
             - name: POSTGRES_PASSWORD
-              value: apppassword
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: DB_PASSWORD
 
             - name: PGDATA
               value: /var/lib/postgresql/data/pgdata
@@ -49,6 +59,7 @@ spec:
 ---
 apiVersion: v1
 kind: Service
+
 metadata:
   name: postgres
   namespace: three-tier
